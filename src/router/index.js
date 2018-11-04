@@ -45,11 +45,110 @@ music.post('/searchid', async(ctx, next) => {
         data: 1
     }
 });
-music.post('/recommend', async(ctx, next) => {
-    console.log(ctx);
-    return ctx.body ={
+music.post('/toplist', async(ctx, next) => {
+    let requestData  = ctx.request.body;
+    console.log(requestData);
+    let data = await request
+        .get('https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg')
+        .set('referer', 'https://y.qq.com/n/yqq/toplist/4.html')
+        .query({
+            // callback: 'recom06006992464842109',
+            // jsonpCallback: "recom06006992464842109",
+            g_tk: '5381',
+            tpl: 3,
+            page: 'detail',
+            date: requestData.date,
+            topid: requestData.topId,
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            type: 'top',
+            song_begin: 0,
+            format: 'json',
+            song_num: 5,
+            notice: 0,
+            loginUin: 0,
+            hostUin: 0,
+            platform: 'yqq',
+            needNewCode: 0,
+        })
+        .then((res) => {
+            // console.log(res);
+            return JSON.parse(res.text);
+        });
+    return ctx.body= {
         status: 200,
-        data: 1
+        data: data
+    }
+});
+music.post('/recommend', async(ctx, next) => {
+    let requestData  = ctx.request.body;
+    let data = await request
+        .get('https://u.y.qq.com/cgi-bin/musicu.fcg')
+        .set('referer', 'https://y.qq.com/')
+        .query({
+            // callback: 'recom06006992464842109',
+            // jsonpCallback: "recom06006992464842109",
+            g_tk: '5381',
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq',
+            needNewCode: 0,
+            data: JSON.stringify(
+                {
+                    "comm":{"ct":24},
+                    "category":{
+                        "method":"get_hot_category",
+                        "param":{"qq":""},
+                        "module":"music.web_category_svr"
+                    },
+                    "recomPlaylist":{
+                        "method":"get_hot_recommend",
+                        "param":{"async":1,"cmd":2},
+                        "module":"playlist.HotRecommendServer"},
+                    "playlist":{
+                        "method":"get_playlist_by_category",
+                        "param":{"id":8,"curPage":1,"size":40,"order":5,"titleid":8},
+                        "module":"playlist.PlayListPlazaServer"},
+                    "new_song":{
+                        "module":"QQMusic.MusichallServer",
+                        "method":"GetNewSong",
+                        "param":{"type":0}},
+                    "new_album":{
+                        "module":"QQMusic.MusichallServer",
+                        "method":"GetNewAlbum",
+                        "param":{
+                            "type":0,
+                            "category":"-1",
+                            "genre":0,
+                            "year":1,
+                            "company":-1,
+                            "sort":1,
+                            "start":0,
+                            "end":39}
+                            },
+                    "toplist":{
+                        "module":"music.web_toplist_svr",
+                        "method":"get_toplist_index",
+                        "param":{}
+                        },
+                    "focus":{
+                        "module":"QQMusic.MusichallServer",
+                        "method":"GetFocus",
+                        "param":{}
+                    }
+                })
+        })
+        .then((res) => {
+            // console.log(res);
+            return JSON.parse(res.text);
+        });
+    return ctx.body= {
+        status: 200,
+        data: data
     }
 });
 route.use('/v1/music', music.routes(), music.allowedMethods());
