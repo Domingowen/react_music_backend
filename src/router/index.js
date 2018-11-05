@@ -118,17 +118,19 @@ music.post('/recommend', async(ctx, next) => {
                         "method":"GetNewSong",
                         "param":{"type":0}},
                     "new_album":{
-                        "module":"QQMusic.MusichallServer",
-                        "method":"GetNewAlbum",
+                        "module":"music.web_album_library",
+                        "method":"get_album_by_tags",
                         "param":{
-                            "type":0,
-                            "category":"-1",
-                            "genre":0,
-                            "year":1,
+                            "area":1,
                             "company":-1,
-                            "sort":1,
-                            "start":0,
-                            "end":39}
+                            "genre":-1,
+                            "type":-1,
+                            "year":-1,
+                            "sort":2,
+                            "get_tags":1,
+                            "sin":0,
+                            "num":40,
+                            "click_albumid":0}
                             },
                     "toplist":{
                         "module":"music.web_toplist_svr",
