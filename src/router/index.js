@@ -293,7 +293,38 @@ music.post('/sing_album', async(ctx, next) => {
         data: data
     }
 });
+music.post('/detail_rec', async(ctx, next) => {
+    let requestData = ctx.request.body;
+    let data = await request
+        .get('https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg')
+        .set('referer', `https://y.qq.com/n/yqq/playlist/${requestData.contentId}.html`)
+        .query({
+            type: 1,
+            json: 1,
+            utf8: 1,
+            onlysong: 0,
+            disstid: requestData.contentId,
+            g_tk: 5381,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq',
+            needNewCode: 0
+        })
+        .then(res => {
+            // console.log(JSON.parse(res.text));
+            return JSON.parse(res.text)
+        });
+    // console.log(data);
+    return ctx.body = {
+        status: 200,
+        data: data
+    }
 
+});
 route.use('/v1/music', music.routes(), music.allowedMethods());
 module.exports ={
     route
