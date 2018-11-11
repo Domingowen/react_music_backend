@@ -10,15 +10,15 @@ music.get('/test', async(ctx, next) => {
         data: 1
     }
 });
-music.post('/searchname', async(ctx, next) => {
+music.post('/search', async(ctx, next) => {
     console.log(ctx);
     let reqData = ctx.request.body;
     console.log(reqData);
     let data = await request
-        .post('https://music.bbbbbb.me/')
-        .set('Host', 'music.bbbbbb.me')
-        .set('Origin', 'http://music.bbbbbb.me')
-        .set('Referer', `http://music.bbbbbb.me/?name=${encodeURI(reqData.search)}&type=qq`)
+        .post('https://www.veligood88.com/music.php')
+        .set('Host', 'www.veligood88.com')
+        .set('Origin', 'https://www.veligood88.com')
+        // .set('Referer', `http://music.bbbbbb.me/?name=${encodeURI(reqData.search)}&type=qq`)
         .set('Content-Type', `application/x-www-form-urlencoded`)
         .set('X-Requested-With', `XMLHttpRequest`)
         .send({
@@ -36,13 +36,6 @@ music.post('/searchname', async(ctx, next) => {
     return ctx.body ={
         status: 200,
         data: data
-    }
-});
-music.post('/searchid', async(ctx, next) => {
-    console.log(ctx);
-    return ctx.body ={
-        status: 200,
-        data: 1
     }
 });
 music.post('/toplist', async(ctx, next) => {
