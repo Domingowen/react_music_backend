@@ -318,6 +318,32 @@ music.post('/detail_rec', async(ctx, next) => {
     }
 
 });
+music.post('/detail_album', async(ctx, next) => {
+    let requestData = ctx.request.body;
+    let data = await request
+        .get('https://c.y.qq.com/v8/fcg-bin/fcg_v8_album_info_cp.fcg')
+        .set('referer', `https://y.qq.com/n/yqq/album/${requestData.albummid}.html`)
+        .query({
+            albummid: requestData.albummid,
+            g_tk: 5381,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq',
+            needNewCode: 0
+        })
+        .then(res => {
+            // console.log(JSON.parse(res.text));
+            return JSON.parse(res.text)
+        });
+    return ctx.body = {
+        status: 200,
+        data: data
+    }
+});
 route.use('/v1/music', music.routes(), music.allowedMethods());
 module.exports ={
     route
