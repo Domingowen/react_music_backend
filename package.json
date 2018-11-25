@@ -10,6 +10,7 @@
     "koa-router": "^7.4.0",
     "koa2-cors": "^2.0.6",
     "qs": "^6.5.2",
-    "superagent": "^4.0.0-beta.5"
+    "superagent": "^4.0.0-beta.5",
+    "superagent-jsonp": "^0.2.1"
   }
 }
