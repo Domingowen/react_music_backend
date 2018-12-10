@@ -332,7 +332,7 @@ music.post('/detail_rec', async (ctx, next) => {
 music.post('/detail_album', async (ctx, next) => {
     let requestData = ctx.request.body;
     let data = await request
-        .get('https://c.y.qq.com/v8/fcg-bin/fcg_v8_album_info_cp.fcg')
+        .get('https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg')
         .set('referer', `https://y.qq.com/n/yqq/album/${requestData.albummid}.html`)
         .query({
             albummid: requestData.albummid,
@@ -355,6 +355,9 @@ music.post('/detail_album', async (ctx, next) => {
         data: data
     }
 });
+/*
+* 音乐歌手列表
+* */
 music.post('/singer_list', async (ctx, next) => {
     let requestData = ctx.request.body;
 
@@ -396,6 +399,9 @@ music.post('/singer_list', async (ctx, next) => {
         data: data
     }
 });
+/*
+* 音乐专辑列表
+* */
 music.post('/album_list', async (ctx, next) => {
     let requestData = ctx.request.body;
     let data = await request
@@ -561,6 +567,9 @@ music.post('/class_list', async (ctx, next) => {
         data: data
     }
 });
+/*
+* 音乐搜索
+* */
 music.post('/new_search', async (ctx, next) => {
     let requestData = ctx.request.body;
     let data = await axios({
@@ -717,7 +726,9 @@ music.post('/music_song_key', async (ctx, next) => { // 获取音乐key
         data: data
     }
 });
-
+/*
+* 音乐歌词
+* */
 music.post('/music_song_lrc2', async (ctx, next) => { // 获取音乐歌词
     let requestData = ctx.request.body;
     let data = await axios({
@@ -728,12 +739,207 @@ music.post('/music_song_lrc2', async (ctx, next) => { // 获取音乐歌词
             id: requestData.songmid
         }
     }).then(res => {
-        // console.log(res);
         return res.data;
     }).catch(err => {
         console.log(err);
     });
     return ctx.body = {
+        status: 200,
+        data: data
+    }
+});
+/*
+* 音乐歌单详情
+* */
+music.post('/music_detail_recommend', async (ctx, next) => {
+    let requestData = ctx.request.body;
+    let data = await axios({
+        url: 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
+        method: 'GET',
+        headers: {
+            referer: 'https://c.y.qq.com/',
+            host: 'c.y.qq.com'
+        },
+        params: {
+            type: 1,
+            json: 1,
+            utf8: 1,
+            onlysong: 0,
+            disstid: requestData.disstId,
+            format: 'json',
+            g_tk: 5381,
+            loginUin: 0,
+            hostUin: 0,
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq',
+            needNewCode: 0,
+        }
+    }).then(res => {
+        console.log(res);
+        return res.data;
+    });
+    return ctx.body = {
+        status: 200,
+        data: data
+    }
+});
+/*
+* 音乐专辑详情
+* */
+music.post('/album_detail', async (ctx, next) => {
+    let requestData = ctx.request.body;
+    let data = await axios({
+        url: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_album_info_cp.fcg',
+        method: 'GET',
+        headers: {
+            referer: 'https://c.y.qq.com/',
+            host: 'c.y.qq.com'
+        },
+        params: {
+            albummid: requestData.albumMid,
+            g_tk: 5381,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq',
+            needNewCode: 0,
+        }
+    }).then(res => {
+        // console.log(res.data);
+        return res.data;
+    }).catch(err => {
+        console.log(err);
+    });
+    return ctx.body = {
+        status: 200,
+        data: data
+    }
+});
+/*
+* 音乐歌手详情
+* */
+music.post('/singer_detail', async (ctx, next) => {
+    let requestData = ctx.request.body;
+    let data = await axios({
+        url: 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_singer_desc.fcg',
+        method: 'GET',
+        headers: {
+            referer: 'https://c.y.qq.com/',
+            host: 'c.y.qq.com'
+        },
+        params: {
+            // g_tk: 5381,
+            // loginUin: 0,
+            // hostUin: 0,
+            format: 'xml',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            // notice: 0,
+            // platform: 'yqq',
+            // needNewCode: 0,
+            // order: 'listen',
+            // begin: requestData.begin,
+            // num: requestData.num,
+            // songstatus: 1,
+            singermid: requestData.singerMid,
+            utf8: 1,
+            // outCharset: utf-8
+            // format: xml
+            r: new Date().getTime()
+        }
+    }).then(res => {
+        // console.log(res.data);
+        return res.data;
+    });
+    return ctx.body ={
+        status: 200,
+        data: data
+    }
+});
+/*
+* 音乐歌手歌曲详情
+* */
+music.post('/singer_song_detail', async (ctx, next) => {
+    let requestData = ctx.request.body;
+    let data = await axios({
+        url: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg',
+        method: 'GET',
+        headers: {
+            referer: 'https://c.y.qq.com/',
+            host: 'c.y.qq.com'
+        },
+        params: {
+            g_tk: 5381,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq',
+            needNewCode: 0,
+            singermid: requestData.singerMid,
+            order: 'listen',
+            begin: requestData.begin,
+            num: requestData.num,
+            songstatus: 1
+        }
+    }).then(res => {
+        // console.log(res.data);
+        return res.data;
+    });
+    return ctx.body ={
+        status: 200,
+        data: data
+    }
+});
+/*
+* 音乐歌手专辑详情
+* */
+music.post('/singer_album_detail', async (ctx, next) => {
+    let requestData = ctx.request.body;
+    let data = await axios({
+        url: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        method: 'GET',
+        headers: {
+            referer: 'https://u.y.qq.com/',
+            host: 'u.y.qq.com'
+        },
+        params: {
+            g_tk: 5381,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq',
+            needNewCode: 0,
+            data: JSON.stringify({singerAlbum: {
+                method: "get_singer_album",
+                        param: {
+                            singermid: requestData.singerMid,
+                            order: "time",
+                            begin: requestData.begin,
+                            num: requestData.num,
+                            exstatus: 1
+                        },
+                        module: "music.web_singer_info_svr"
+                    }
+            })
+        }
+    }).then(res => {
+        console.log(res.data);
+        return res.data;
+    }).catch(err => {
+        console.log(err);
+    });
+    return ctx.body ={
         status: 200,
         data: data
     }
